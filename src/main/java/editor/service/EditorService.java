@@ -37,18 +37,16 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.specimpl.ResponseBuilderImpl;
 
-import editor.entity.Activity;
-import editor.entity.Code;
-import editor.entity.Group;
-import editor.entity.Status;
-import editor.entity.Status.StatusEnum;
-import editor.entity.User;
+import editor.model.Activity;
+import editor.model.Code;
+import editor.model.Group;
+import editor.model.Status;
+import editor.model.Status.StatusEnum;
+import editor.model.User;
 
 @RequestScoped
 @Path("/api/v1/")
 public class EditorService extends BaseService implements EditorInterface {
-
-    EntityManager em;
 
     @POST
     @Path("createUser")
@@ -295,7 +293,11 @@ public class EditorService extends BaseService implements EditorInterface {
 
             String hash = code.setHashCode(code.generateHash());
             code.setHashCode(hash);
+<<<<<<< HEAD
             code.setLimitBlock(5);;
+=======
+            code.setLimitBlock(1000);;
+>>>>>>> vm-v2
             codeRepository.persist(code);
 
         return code;
@@ -315,7 +317,7 @@ public class EditorService extends BaseService implements EditorInterface {
 
                 code.setTextCode(textCode);
                 String newHash = code.setHashCode(code.generateHash());
-                int limitBlock = lastcode.getLimitBlock() + 5;
+                int limitBlock = lastcode.getLimitBlock() + 1000;
                 code.setHashCode(newHash);
                 code.setLimitBlock(limitBlock);
                 codeRepository.persist(code);

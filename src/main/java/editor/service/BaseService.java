@@ -19,7 +19,7 @@ package editor.service;
 
 import javax.inject.Inject;
 
-import editor.data.*;
+import editor.repository.*;
 
 public class BaseService {
 

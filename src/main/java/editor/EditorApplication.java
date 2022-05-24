@@ -17,6 +17,7 @@ package editor;
  * limitations under the License.
  */
 
+import editor.service.*;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
@@ -25,13 +26,13 @@ import javax.ws.rs.core.Application;
  * path application
  */
 @ApplicationPath("/editor")
-public class EditorService extends Application {
+public class EditorApplication extends Application {
 
     @Override
     public Set<Class<?>> getClasses() {
         final Set<Class<?>> resources = new HashSet<Class<?>>();
 
-        resources.add(editor.service.EditorService.class);
+        resources.add(EditorService.class);
 
         return resources;
     }

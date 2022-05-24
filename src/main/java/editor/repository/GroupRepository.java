@@ -1,4 +1,4 @@
-package editor.data;
+package editor.repository;
 
 
 /**
@@ -19,10 +19,12 @@ package editor.data;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import editor.entity.*;
+import editor.model.Group;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 @ApplicationScoped
-public class CodeRepository implements PanacheRepository<Code> {
-    
+public class GroupRepository implements PanacheRepository<Group> {
+
+  
+
 }
