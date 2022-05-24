@@ -1,4 +1,4 @@
-package editor.controller;
+package editor.service;
 
 
 /**
@@ -21,20 +21,20 @@ import javax.inject.Inject;
 
 import editor.data.*;
 
-public class BaseController {
+public class BaseService {
 
     @Inject
-    protected UserDAO userDAO;
+    protected UserRepository userRepository;
 
     @Inject
-    protected CodeDAO codeDAO;
+    protected CodeRepository codeRepository;
 
     @Inject
-    protected GroupDAO groupDAO;
+    protected GroupRepository groupRepository;
 
     @Inject
-    protected StatusDAO statusDAO;
+    protected StatusRepository statusRepository;
 
     @Inject
-    protected ActivityDAO activityDAO;
+    protected ActivityRepository activityRepository;
 }

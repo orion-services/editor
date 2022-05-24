@@ -1,4 +1,4 @@
-package editor.controller;
+package editor.service;
 
 
 /**
@@ -46,7 +46,7 @@ import editor.entity.User;
 
 @RequestScoped
 @Path("/api/v1/")
-public class EditorController extends BaseController implements EditorInterface {
+public class EditorService extends BaseService implements EditorInterface {
 
     EntityManager em;
 
@@ -58,7 +58,7 @@ public class EditorController extends BaseController implements EditorInterface 
     @Override
     public User createUser(@FormParam("name") final String name, @FormParam("hashUser") final String hashUser) throws WebApplicationException{
         final User user = new User();
-        final User hashCheck = userDAO.find("hashUser", hashUser).firstResult();
+        final User hashCheck = userRepository.find("hashUser", hashUser).firstResult();
 
         if(name.isEmpty()) {
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -77,7 +77,7 @@ public class EditorController extends BaseController implements EditorInterface 
         }else{
             user.setHashUser(hashUser);
             user.setName(name);
-            userDAO.persist(user);
+            userRepository.persist(user);
         }
         return user;
     }
@@ -93,8 +93,8 @@ public class EditorController extends BaseController implements EditorInterface 
         @FormParam("hashUser") final String hashUser
     )throws WebApplicationException{
         final Group group = new Group();
-        final User user = userDAO.find("hashUser", hashUser).firstResult();
-        final Group groupCheck = groupDAO.find("name", namegroup).firstResult();
+        final User user = userRepository.find("hashUser", hashUser).firstResult();
+        final Group groupCheck = groupRepository.find("name", namegroup).firstResult();
 
         if(namegroup.isEmpty() || user == null) {
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -113,7 +113,7 @@ public class EditorController extends BaseController implements EditorInterface 
         }else{
             group.addUser(user);
             group.setName(namegroup);
-            groupDAO.persist(group);
+            groupRepository.persist(group);
 
         }
 
@@ -131,9 +131,9 @@ public class EditorController extends BaseController implements EditorInterface 
         @FormParam("hashUser") final String hashUser, 
         @FormParam("namegroup") final String namegroup) throws WebApplicationException {
 
-        final User user = userDAO.find("hashUser", hashUser).firstResult();
+        final User user = userRepository.find("hashUser", hashUser).firstResult();
         final Status status = new Status();
-        final Group group = groupDAO.find("name", namegroup).firstResult();
+        final Group group = groupRepository.find("name", namegroup).firstResult();
 
         if(user==null || group==null) {
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -145,7 +145,7 @@ public class EditorController extends BaseController implements EditorInterface 
             status.setStatusEnum(StatusEnum.BLOCKED);
             user.addStatuses(status);
             group.addUser(user);
-            groupDAO.persist(group);
+            groupRepository.persist(group);
         }
         return group;
     }
@@ -159,7 +159,7 @@ public class EditorController extends BaseController implements EditorInterface 
     public Activity createActivity(
         @FormParam("namegroup") final String namegroup) throws WebApplicationException {
         final Activity activity = new Activity();
-        final Group group = groupDAO.find("name", namegroup).firstResult();
+        final Group group = groupRepository.find("name", namegroup).firstResult();
         final Status status = new Status();
         
         
@@ -175,7 +175,7 @@ public class EditorController extends BaseController implements EditorInterface 
             group.addStatus(status);
            
             activity.setUgroup(group);
-            activityDAO.persist(activity);
+            activityRepository.persist(activity);
         }
         return activity;
 
@@ -195,8 +195,8 @@ public class EditorController extends BaseController implements EditorInterface 
     @Override
     public Status checkStatus(@FormParam("namegroup") String namegroup) throws WebApplicationException{
         
-        final Group group = groupDAO.find("name", namegroup).firstResult();
-        final Status status = statusDAO.find("ugroup_id", group.getId()).firstResult();
+        final Group group = groupRepository.find("name", namegroup).firstResult();
+        final Status status = statusRepository.find("ugroup_id", group.getId()).firstResult();
 
         if(group==null || status==null){
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -230,12 +230,12 @@ public class EditorController extends BaseController implements EditorInterface 
         @FormParam("hashUser") final String hashUser, 
         @FormParam("namegroup") final String namegroup) throws WebApplicationException{
 
-        final User user = userDAO.find("hashUser", hashUser).firstResult();
+        final User user = userRepository.find("hashUser", hashUser).firstResult();
      
-        final Group group = groupDAO.find("name", namegroup).firstResult();
-        final Activity activity = activityDAO.find("ugroup_id", group.getId()).firstResult();
-        final Code checkUser = codeDAO.find("user_id", user.getId()).firstResult();
-        Code code = codeDAO.find("order by id desc").firstResult();  
+        final Group group = groupRepository.find("name", namegroup).firstResult();
+        final Activity activity = activityRepository.find("ugroup_id", group.getId()).firstResult();
+        final Code checkUser = codeRepository.find("user_id", user.getId()).firstResult();
+        Code code = codeRepository.find("order by id desc").firstResult();
         
         if(group==null || user==null || checkUser!=null || activity==null){
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -249,7 +249,7 @@ public class EditorController extends BaseController implements EditorInterface 
             code.setUser(user);
             activity.setUser(user);
             code.setActivity(activity);
-            codeDAO.isPersistent(code);
+            codeRepository.isPersistent(code);
 
             return "http://150.230.76.241:7000/?hash=" + code.getHashCode() + "&lblock=" + code.getLimitBlock();
         } 
@@ -268,8 +268,8 @@ public class EditorController extends BaseController implements EditorInterface 
     @Transactional
     @Override
     public List<Activity> listActivities(@FormParam("hashUser") String hashUser)throws WebApplicationException{
-        final User user = userDAO.find("hashUser", hashUser).firstResult();
-        final List<Activity> activity = activityDAO.list("user_id", user.getId());
+        final User user = userRepository.find("hashUser", hashUser).firstResult();
+        final List<Activity> activity = activityRepository.list("user_id", user.getId());
 
         if(activity==null){
             ResponseBuilderImpl builder = new ResponseBuilderImpl();
@@ -296,7 +296,7 @@ public class EditorController extends BaseController implements EditorInterface 
             String hash = code.setHashCode(code.generateHash());
             code.setHashCode(hash);
             code.setLimitBlock(5);;
-            codeDAO.persist(code);
+            codeRepository.persist(code);
 
         return code;
 
@@ -310,7 +310,7 @@ public class EditorController extends BaseController implements EditorInterface 
     public Code incrementCode(@PathParam("hash") final String hash, @FormParam("textCode") final String textCode) throws WebApplicationException {
 
         Code code = new Code();
-        Code lastcode = codeDAO.find("hashCode", hash).firstResult();
+        Code lastcode = codeRepository.find("hashCode", hash).firstResult();
         try {
 
                 code.setTextCode(textCode);
@@ -318,7 +318,7 @@ public class EditorController extends BaseController implements EditorInterface 
                 int limitBlock = lastcode.getLimitBlock() + 5;
                 code.setHashCode(newHash);
                 code.setLimitBlock(limitBlock);
-                codeDAO.persist(code);
+                codeRepository.persist(code);
 
         } catch (Exception e) {
             throw new WebApplicationException("Code not found", Response.Status.NOT_FOUND);
@@ -334,7 +334,7 @@ public class EditorController extends BaseController implements EditorInterface 
     public Code loadCode(@PathParam("hash") final String hash) throws WebApplicationException {
         Code code = new Code();
         try {
-            code = codeDAO.find("hashCode", hash).firstResult();
+            code = codeRepository.find("hashCode", hash).firstResult();
         } catch (Exception e) {
             throw new WebApplicationException("Code not found", Response.Status.NOT_FOUND);
         }

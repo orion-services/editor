@@ -23,6 +23,6 @@ import editor.entity.Group;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 @ApplicationScoped
-public class GroupDAO implements PanacheRepository<Group> {
+public class GroupRepository implements PanacheRepository<Group> {
 
 }
