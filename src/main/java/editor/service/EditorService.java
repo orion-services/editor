@@ -293,11 +293,7 @@ public class EditorService extends BaseService implements EditorInterface {
 
             String hash = code.setHashCode(code.generateHash());
             code.setHashCode(hash);
-<<<<<<< HEAD
-            code.setLimitBlock(5);;
-=======
             code.setLimitBlock(1000);;
->>>>>>> vm-v2
             codeRepository.persist(code);
 
         return code;
